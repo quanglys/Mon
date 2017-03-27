@@ -4,12 +4,10 @@ import socket
 try:
     import Common.MyEnum as MyEnum
     import Common.MyParser as MyParser
-    import Common.GetDataFromServer as GetData
     import Compare.Monitor2.ParseMon2 as ParseMon2
 except ImportError:
     import MyEnum
     import MyParser
-    import GetDataFromServer as GetData
     import ParseMon2
 
 import sys
@@ -153,15 +151,7 @@ def workWithServer(sock : socket.socket):
 
 def getData():
 
-    if (DATA_MODE == MyEnum.MonNode.DATA_FROM_INFLUXDB.value):
-        global timeStart
-        if (timeStart > GetData.ONE_MINUTE * GetData.MAX_TIME + startTime):
-            timeStart = startTime
-        result = GetData.getData(timeStart)
-        timeStart += GetData.ONE_MINUTE
-        return result
-
-    elif (DATA_MODE == MyEnum.MonNode.DATA_GEN_AUTO.value):
+    if (DATA_MODE == MyEnum.MonNode.DATA_GEN_AUTO.value):
         global fileData
         line = fileData.readline().replace('\n', '')
         if (line == ''):
@@ -186,11 +176,7 @@ def monData(sock: socket.socket):
     dtRAM = 0
     dtMEM = 0
 
-    if (DATA_MODE == MyEnum.MonNode.DATA_FROM_INFLUXDB.value):
-        global timeStart, startTime
-        startTime = GetData.TIME_START + GetData.ONE_MINUTE * GetData.MAX_TIME * int(addName)
-        timeStart = startTime
-    elif (DATA_MODE == MyEnum.MonNode.DATA_GEN_AUTO.value):
+    if (DATA_MODE == MyEnum.MonNode.DATA_GEN_AUTO.value):
         global fileData
         fileData = open('data/data' + str(addName) + '.dat', 'r')
 
@@ -221,8 +207,6 @@ def monData(sock: socket.socket):
 
     if (DATA_MODE == MyEnum.MonNode.DATA_GEN_AUTO.value):
         fileData.close()
-    elif (DATA_MODE == MyEnum.MonNode.DATA_FROM_INFLUXDB.value):
-        pass
 ################################################################################
 ################################################################################
 #init connection
