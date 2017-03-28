@@ -229,5 +229,5 @@ try:
     #wait for all thread running
     thWork.join()
     thMon.join()
-except socket.error:
-    pass
+except socket.error as e:
+    print(e)
